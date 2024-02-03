@@ -20,6 +20,11 @@ target_include_directories(detector-core
     include
 )
 
+target_link_libraries(detector-core
+  PUBLIC
+    systemd
+)
+
 set_target_properties(detector-core
   PROPERTIES
     CXX_STANDARD 20
