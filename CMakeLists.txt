@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(detector LANGUAGES C CXX)
+project(detector-core
+  LANGUAGES C CXX
+  VERSION 0.0.1
+)
 
 find_package(Threads REQUIRED)
 
