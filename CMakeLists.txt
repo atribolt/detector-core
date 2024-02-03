@@ -15,6 +15,11 @@ add_library(detector-core OBJECT
 set(CMAKE_INCLUDE_CURRENT_DIR Yes)
 
 
+target_include_directories(detector-core
+  PUBLIC
+    include
+)
+
 set_target_properties(detector-core
   PROPERTIES
     CXX_STANDARD 20
