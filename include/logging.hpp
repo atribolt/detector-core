@@ -8,31 +8,36 @@ int sd_journal_print_with_location(
     int priority, const char *file, const char *line, const char *func, const char *format, ...);
 }
 
-#define _STRINGIFY(x) #x
+#define _XSTRINGIFY(x) #x
+#define _STRINGIFY(x) _XSTRINGIFY(x)
 
 #define vDebug(fmt, ...) \
   details::sd_journal_print_with_location(LOG_DEBUG, \
 					  "CODE_FILE=" __FILE__, \
 					  "CODE_LINE=" _STRINGIFY(__LINE__), \
 					  __func__, \
+					  fmt, \
 					  ##__VA_ARGS__)
 #define vInfo(fmt, ...) \
   details::sd_journal_print_with_location(LOG_INFO, \
 					  "CODE_FILE=" __FILE__, \
 					  "CODE_LINE=" _STRINGIFY(__LINE__), \
 					  __func__, \
+					  fmt, \
 					  ##__VA_ARGS__)
 #define vWarning(fmt, ...) \
   details::sd_journal_print_with_location(LOG_WARNING, \
 					  "CODE_FILE=" __FILE__, \
 					  "CODE_LINE=" _STRINGIFY(__LINE__), \
 					  __func__, \
+					  fmt, \
 					  ##__VA_ARGS__)
 #define vError(fmt, ...) \
   details::sd_journal_print_with_location(LOG_ERR, \
 					  "CODE_FILE=" __FILE__, \
 					  "CODE_LINE=" _STRINGIFY(__LINE__), \
 					  __func__, \
+					  fmt, \
 					  ##__VA_ARGS__)
 
 #define __streamLog(level, msg) \
