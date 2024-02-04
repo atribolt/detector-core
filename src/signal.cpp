@@ -17,12 +17,12 @@ void signal::set_sample_rate(uint32_t sr)
   _sample_rate = sr;
 }
 
-void signal::set_signal_data(const data_t &signal)
+void signal::set_signal_data(const data_t& signal)
 {
   _signal = signal;
 }
 
-void signal::swap(signal &o)
+void signal::swap(signal& o)
 {
   std::swap(_lon, o._lon);
   std::swap(_lat, o._lat);
@@ -57,7 +57,7 @@ uint32_t signal::sample_rate() const
   return _sample_rate;
 }
 
-const signal::data_t &signal::samples() const
+const signal::data_t& signal::samples() const
 {
   return _signal;
 }

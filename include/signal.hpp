@@ -4,8 +4,7 @@
 #include <cinttypes>
 #include <vector>
 
-class signal
-{
+class signal {
 public:
   using sample_t = int16_t;
   using data_t = std::vector<sample_t>;
@@ -28,12 +27,12 @@ public:
   const data_t& samples() const;
 
 private:
-  double _lon{0.0};
-  double _lat{0.0};
-  double _alt{0.0};
+  double _lon { 0.0 };
+  double _lat { 0.0 };
+  double _alt { 0.0 };
 
   std::chrono::microseconds _begin_timestamp;
-  uint32_t _sample_rate{1};
+  uint32_t _sample_rate { 1 };
 
-  data_t _signal; // byte order LE
+  data_t _signal;  // byte order LE
 };

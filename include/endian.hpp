@@ -1,34 +1,34 @@
 #pragma once
 
-#include <bit>
 #include <algorithm>
-
+#include <bit>
 
 template<class T>
-  T to_little_endian(T num) {
-    constexpr auto size = sizeof(T);
+T to_little_endian(T num)
+{
+  constexpr auto size = sizeof(T);
 
-    if constexpr (size > 1 && std::endian::native == std::endian::big) {
+  if constexpr (size > 1 && std::endian::native == std::endian::big) {
       std::reverse((char*)&num, (char*)&num + size);
     }
 
-    return num;
-  }
+  return num;
+}
 
 template<class T>
-  T from_little_endian(T num) {
-    constexpr auto size = sizeof(T);
+T from_little_endian(T num)
+{
+  constexpr auto size = sizeof(T);
 
-    if constexpr (size > 1 && std::endian::native == std::endian::big) {
+  if constexpr (size > 1 && std::endian::native == std::endian::big) {
       std::reverse((char*)&num, (char*)&num + size);
     }
 
-    return num;
-  }
+  return num;
+}
 
 template<class Tout>
-  Tout from_little_endian(const void* data) {
-    return from_little_endian<Tout>(
-      *reinterpret_cast<const Tout*>(data)
-    );
-  }
+Tout from_little_endian(const void* data)
+{
+  return from_little_endian<Tout>(*reinterpret_cast<const Tout*>(data));
+}

@@ -1,13 +1,12 @@
 #pragma once
 
+#include "include/signal.hpp"
+
 #include <cinttypes>
 #include <istream>
 #include <ostream>
 
-#include "include/signal.hpp"
-
-class signal_file
-{
+class signal_file {
 public:
   static constexpr uint16_t kFormatVersion = 1;
 
