@@ -2,7 +2,7 @@
 Language:        Cpp
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Right
+AlignArrayOfStructures: None
 AlignConsecutiveAssignments:
   Enabled:         false
   AcrossEmptyLines: false
@@ -65,14 +65,14 @@ BraceWrapping:
   BeforeElse:      true
   BeforeLambdaBody: false
   BeforeWhile:     false
-  IndentBraces:    true
+  IndentBraces:    false
   SplitEmptyFunction: false
   SplitEmptyRecord: false
   SplitEmptyNamespace: false
 BreakAfterAttributes: Always
 BreakAfterJavaFieldAnnotations: false
 BreakArrays:     true
-BreakBeforeBinaryOperators: All
+BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeConceptDeclarations: Always
 BreakBeforeBraces: Custom
 BreakBeforeInlineASMColon: OnlyMultiline
@@ -84,7 +84,7 @@ ColumnLimit:     90
 CommentPragmas:  '^ IWYU pragma:'
 CompactNamespaces: false
 ConstructorInitializerIndentWidth: 2
-ContinuationIndentWidth: 4
+ContinuationIndentWidth: 2
 Cpp11BracedListStyle: false
 DerivePointerAlignment: false
 DisableFormat:   false
@@ -212,7 +212,7 @@ StatementAttributeLikeMacros:
 StatementMacros:
   - Q_UNUSED
   - QT_REQUIRE_VERSION
-TabWidth:        8
+TabWidth:        4
 UseTab:          Never
 WhitespaceSensitiveMacros:
   - BOOST_PP_STRINGIZE
