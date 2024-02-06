@@ -1,6 +1,6 @@
 #pragma once
 
-#include "include/signal.hpp"
+#include "signal.hpp"
 
 #include <cinttypes>
 #include <istream>
