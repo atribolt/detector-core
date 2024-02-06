@@ -11,8 +11,10 @@ find_package(Threads REQUIRED)
 add_library(detector-core OBJECT
   include/endian.hpp
   include/logging.hpp src/logging.cpp
-  include/signal_file.hpp src/signal_file.cpp
+  include/signal_file_v1.hpp src/signal_file_v1.cpp
   include/signal.hpp src/signal.cpp
+  include/sample.hpp
+  include/signal_file_v2.hpp src/signal_file_v2.cpp
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR Yes)

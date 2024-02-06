@@ -1,7 +1,6 @@
-#include "include/signal_file.hpp"
+#include "include/signal_file_v2.hpp"
 
 #include "include/endian.hpp"
-#include "include/logging.hpp"
 
 #include <cmath>
 #include <cstring>
@@ -10,45 +9,45 @@
 
 namespace
 {
-  constexpr int kOverflowBit = 14;
   constexpr unsigned kVersionLength = 2;
   constexpr unsigned kTimeLength = 14;
   constexpr unsigned kTimeMicrosecondsLength = 4;
   constexpr unsigned kCoordsLength = 18;
   constexpr unsigned kSampleRateLength = 4;
+  constexpr unsigned kFlagsLength = 1;
   constexpr unsigned kSamplesCountLength = 4;
   constexpr int16_t kSampleOffset = 1000;
-}  // namespace
+}
 
 namespace core
 {
-  signal_file::signal_file()
+  signal_file_v2::signal_file_v2()
   {}
 
-  signal_file::signal_file(signal_t&& s)
+  signal_file_v2::signal_file_v2(signal_t&& s)
     : _signal(std::move(s))
   {}
 
-  signal_file::signal_file(const signal_t& s)
+  signal_file_v2::signal_file_v2(const signal_t& s)
     : _signal(s)
   {}
 
-  void signal_file::set_signal(signal_t&& s)
+  void signal_file_v2::set_signal(signal_t&& s)
   {
     _signal.swap(s);
   }
 
-  void signal_file::set_signal(const signal_t& s)
+  void signal_file_v2::set_signal(const signal_t& s)
   {
     _signal = s;
   }
 
-  const signal_file::signal_t& signal_file::get_signal() const
+  const signal_file_v2::signal_t& signal_file_v2::get_signal() const
   {
     return _signal;
   }
 
-  std::ostream& operator<<(std::ostream& os, const signal_file& s)
+  std::ostream& operator<<(std::ostream& os, const signal_file_v2& s)
   {
     auto samples = s._signal.samples();
     auto begin_time = s._signal.begin_timestamp();
@@ -57,8 +56,7 @@ namespace core
 
     unsigned samplesLength = samples.size() * sizeof(decltype(samples)::value_type);
     unsigned totalSize = kVersionLength + kTimeLength + kTimeMicrosecondsLength
-                       + kCoordsLength + kSampleRateLength + kSamplesCountLength
-                       + samplesLength;
+                       + kCoordsLength + kSampleRateLength + kFlagsLength + kSamplesCountLength;
 
     std::string buffer(totalSize, '\0');
     char* data = buffer.data();
@@ -100,6 +98,9 @@ namespace core
 
     *(uint32_t*)data = to_little_endian<uint32_t>(s._signal.sample_rate());
     data += kSampleRateLength;
+
+    *(uint8_t*)data = s._signal.flags();
+    data += kFlagsLength;
 
     *(uint32_t*)data = to_little_endian<uint32_t>(samples.size());
     data += kSamplesCountLength;

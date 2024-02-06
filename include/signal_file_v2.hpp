@@ -8,16 +8,16 @@
 
 namespace core
 {
-  class signal_file {
+  class signal_file_v2 {
   public:
-    static constexpr uint16_t kFormatVersion = 1;
+    static constexpr uint16_t kFormatVersion = 2;
 
     using signal_t = signal;
 
   public:
-    signal_file();
-    signal_file(signal_t&& s);
-    signal_file(const signal_t& s);
+    signal_file_v2();
+    signal_file_v2(signal_t&& s);
+    signal_file_v2(const signal_t& s);
 
     void set_signal(signal_t&& s);
     void set_signal(const signal_t& s);
@@ -28,8 +28,8 @@ namespace core
     signal_t _signal;
 
   private:
-    friend std::ostream& operator<<(std::ostream& os, const signal_file& s);
+    friend std::ostream& operator<<(std::ostream& os, const signal_file_v2& s);
   };
 
-  std::ostream& operator<<(std::ostream& os, const signal_file& s);
+  std::ostream& operator<<(std::ostream& os, const signal_file_v2& s);
 }

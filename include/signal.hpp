@@ -4,11 +4,13 @@
 #include <cinttypes>
 #include <vector>
 
+#include "sample.hpp"
+
 namespace core
 {
   class signal {
   public:
-    using sample_t = int16_t;
+    using sample_t = decltype(sample::data);
     using data_t = std::vector<sample_t>;
 
   public:
@@ -16,7 +18,28 @@ namespace core
     void set_begin_timestamp(std::chrono::microseconds ts);
     void set_coords(double lon, double lat, double alt);
     void set_sample_rate(uint32_t sr);
-    void set_signal_data(const data_t& signal);
+
+    template<class It>
+      void set_signal_data(It begin, It end)
+      {
+        using iterator_value_t = typename std::iterator_traits<It>::value_type;
+        static_assert(std::is_same_v<iterator_value_t, sample>, "Expected `sample` iterator");
+
+        auto newsize = std::distance(begin, end);
+        if (newsize >= 0)
+        {
+          _signal.resize(newsize);
+          auto sbeg = _signal.begin();
+
+          while (begin != end) {
+            _flags |= begin->flags;
+            *sbeg = to_little_endian<sample_t>(begin->data);
+
+            ++begin;
+            ++sbeg;
+          }
+        }
+      }
 
     void swap(signal& other);
 
@@ -26,6 +49,7 @@ namespace core
 
     std::chrono::microseconds begin_timestamp() const;
     uint32_t sample_rate() const;
+    uint8_t flags() const;
     const data_t& samples() const;
 
   private:
@@ -36,6 +60,7 @@ namespace core
     std::chrono::microseconds _begin_timestamp;
     uint32_t _sample_rate { 1 };
 
-    data_t _signal;  // byte order LE
+    uint8_t _flags {0};
+    data_t _signal;  // LE data
   };
 }

@@ -19,11 +19,6 @@ namespace core
     _sample_rate = sr;
   }
 
-  void signal::set_signal_data(const data_t& signal)
-  {
-    _signal = signal;
-  }
-
   void signal::swap(signal& o)
   {
     std::swap(_lon, o._lon);
@@ -31,6 +26,7 @@ namespace core
     std::swap(_alt, o._alt);
     std::swap(_begin_timestamp, o._begin_timestamp);
     std::swap(_sample_rate, o._sample_rate);
+    std::swap(_flags, o._flags);
     std::swap(_signal, o._signal);
   }
 
@@ -57,6 +53,11 @@ namespace core
   uint32_t signal::sample_rate() const
   {
     return _sample_rate;
+  }
+
+  uint8_t signal::flags() const
+  {
+  return _flags;
   }
 
   const signal::data_t& signal::samples() const
