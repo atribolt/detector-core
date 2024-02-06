@@ -1,5 +1,6 @@
 #pragma once
 
+#include "endian.hpp"
 #include "sample.hpp"
 
 #include <chrono>
