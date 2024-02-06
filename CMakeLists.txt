@@ -22,6 +22,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR Yes)
 target_include_directories(detector-core
   PUBLIC
     include
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(detector-core
@@ -34,3 +35,5 @@ set_target_properties(detector-core
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED Yes
 )
+
+configure_file(detector_core_version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/detector_core_version.hpp)
