@@ -57,7 +57,7 @@ namespace core
 
   uint8_t signal::flags() const
   {
-  return _flags;
+    return _flags;
   }
 
   const signal::data_t& signal::samples() const

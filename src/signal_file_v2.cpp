@@ -56,7 +56,8 @@ namespace core
 
     unsigned samplesLength = samples.size() * sizeof(decltype(samples)::value_type);
     unsigned totalSize = kVersionLength + kTimeLength + kTimeMicrosecondsLength
-                       + kCoordsLength + kSampleRateLength + kFlagsLength + kSamplesCountLength;
+                       + kCoordsLength + kSampleRateLength + kFlagsLength
+                       + kSamplesCountLength;
 
     std::string buffer(totalSize, '\0');
     char* data = buffer.data();
