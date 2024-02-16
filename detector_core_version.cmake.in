@@ -1,3 +1,3 @@
 #pragma once
 
-#define DETECTOR_CORE_VERSION "@CORE_VERSION@"
+#define DETECTOR_CORE_VERSION "@detector-core_VERSION@"

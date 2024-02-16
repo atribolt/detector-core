@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(CORE_VERSION 0.0.1)
-
 project(detector-core
   LANGUAGES C CXX
-  VERSION ${CORE_VERSION}
+  VERSION 0.0.1
 )
 
-find_package(Threads REQUIRED)
+find_package(PkgConfig REQUIRED)
 
+pkg_search_module(systemd REQUIRED IMPORTED_TARGET libsystemd)
 
 add_library(detector-core OBJECT
   include/endian.hpp
@@ -16,6 +15,8 @@ add_library(detector-core OBJECT
   include/signal.hpp src/signal.cpp
   include/sample.hpp
   include/signal_file_v2.hpp src/signal_file_v2.cpp
+  include/core_version.hpp
+  src/core_version.cpp
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR Yes)
@@ -24,12 +25,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR Yes)
 target_include_directories(detector-core
   PUBLIC
     include
-    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 target_link_libraries(detector-core
   PUBLIC
-    systemd
+    PkgConfig::systemd
 )
 
 set_target_properties(detector-core
