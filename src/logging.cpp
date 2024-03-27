@@ -2,8 +2,7 @@
 
 #include <systemd/sd-journal.h>
 
-int core::details::sd_journal_print_with_location(int priority, const char* file,
-                                                  const char* line, const char* func,
+int core::details::sd_journal_print_with_location(int priority, const char* file, const char* line, const char* func,
                                                   const char* format, ...)
 {
   va_list list;

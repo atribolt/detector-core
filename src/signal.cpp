@@ -19,6 +19,16 @@ namespace core
     _sample_rate = sr;
   }
 
+  void signal::set_signal(data_t&& data)
+  {
+    std::swap(_signal, data);
+  }
+
+  void signal::set_flags(uint8_t flags)
+  {
+    _flags = flags;
+  }
+
   void signal::swap(signal& o)
   {
     std::swap(_lon, o._lon);

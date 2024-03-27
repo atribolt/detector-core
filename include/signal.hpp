@@ -24,9 +24,8 @@ namespace core
     void set_signal_data(It begin, It end)
     {
       using iterator_value_t = typename std::iterator_traits<It>::value_type;
-      static_assert(std::is_same_v<iterator_value_t, sample>,
-                    "Expected `sample` iterator");
 
+      static_assert(std::same_as<iterator_value_t, sample>, "expected 'sample' iterator");
       auto newsize = std::distance(begin, end);
       if (newsize >= 0) {
         _signal.resize(newsize);
@@ -41,6 +40,9 @@ namespace core
         }
       }
     }
+
+    void set_signal(data_t&& data);
+    void set_flags(uint8_t flags);
 
     void swap(signal& other);
 

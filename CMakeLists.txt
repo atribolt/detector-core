@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(detector-core
   LANGUAGES C CXX
-  VERSION 0.0.1
+  VERSION 0.0.2
 )
 
 find_package(PkgConfig REQUIRED)
@@ -14,8 +14,9 @@ add_library(detector-core OBJECT
   include/logging.hpp src/logging.cpp
   include/signal.hpp src/signal.cpp
   include/sample.hpp
+  include/signal_file.hpp
   include/signal_file_v2.hpp src/signal_file_v2.cpp
-  include/core_version.hpp
+  include/core_version.hpp src/signal_file.cpp
   src/core_version.cpp
 )
 
