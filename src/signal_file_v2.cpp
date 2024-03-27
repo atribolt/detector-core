@@ -87,93 +87,87 @@ namespace core::signal_file::v2
 
     char buffer[kMaxSize] = { 0 };
 
-    try {
-      {  // load time
-        from.read(buffer, kTimeLength);
-        if (from.gcount() != kTimeLength) {
-          throw signal_file_load_error { "error while read time" };
-        }
-
-        tm time;
-        from >> std::get_time(&time, kTimeFormat.data());
-
-        time_t begin_tm_s = std::mktime(&time);
-        std::chrono::microseconds begin_time = std::chrono::seconds { begin_tm_s };
-
-        from.read(buffer, kTimeMicrosecondsLength);
-        if (from.gcount() != kTimeMicrosecondsLength) {
-          throw signal_file_load_error { "error while read time microseconds" };
-        }
-
-        uint32_t begin_time_us = from_little_endian<uint32_t>(buffer);
-        begin_time += std::chrono::microseconds(begin_time_us);
-        result.set_begin_timestamp(begin_time);
+    {  // load time
+      from.read(buffer, kTimeLength);
+      if (from.gcount() != kTimeLength) {
+        throw signal_file_load_error { "error while read time" };
       }
 
-      {  // load coords
-        from.read(buffer, kCoordsLength);
-        if (from.gcount() != kCoordsLength) {
-          throw signal_file_load_error { "error while read coords" };
-        }
+      tm time;
+      from >> std::get_time(&time, kTimeFormat.data());
 
-        uint16_t lon1 = from_little_endian<uint16_t>(buffer);
-        uint32_t lon2 = from_little_endian<uint32_t>(buffer + 2);
-        uint16_t lat1 = from_little_endian<uint16_t>(buffer + 6);
-        uint32_t lat2 = from_little_endian<uint32_t>(buffer + 8);
-        uint16_t alt1 = from_little_endian<uint16_t>(buffer + 12);
-        uint32_t alt2 = from_little_endian<uint16_t>(buffer + 14);
+      time_t begin_tm_s = std::mktime(&time);
+      std::chrono::microseconds begin_time = std::chrono::seconds { begin_tm_s };
 
-        double lon = double(lon1) + double(lon2) / 1'000'000;
-        double lat = double(lat1) + double(lat2) / 1'000'000;
-        double alt = double(alt1) + double(alt2) / 1'000'000;
-
-        result.set_coords(lon, lat, alt);
+      from.read(buffer, kTimeMicrosecondsLength);
+      if (from.gcount() != kTimeMicrosecondsLength) {
+        throw signal_file_load_error { "error while read time microseconds" };
       }
 
-      {  // load sample rate
-        from.read(buffer, kSampleRateLength);
-        if (from.gcount() != kSampleRateLength) {
-          throw signal_file_load_error { "error while read sample rate" };
-        }
-
-        uint32_t sample_rate = from_little_endian<uint32_t>(buffer);
-        result.set_sample_rate(sample_rate);
-      }
-
-      {  // load flags
-        from.read(buffer, kFlagsLength);
-        if (from.gcount() != kFlagsLength) {
-          throw signal_file_load_error { "error while read flags" };
-        }
-
-        uint8_t flags = from_little_endian<uint8_t>(buffer);
-        result.set_flags(flags);
-      }
-
-      {  // load samples
-        from.read(buffer, kSamplesCountLength);
-        if (from.gcount() != kSamplesCountLength) {
-          throw signal_file_load_error { "error while read samples count" };
-        }
-
-        uint32_t count = from_little_endian<uint32_t>(buffer);
-        signal::data_t samples;
-        samples.reserve(count);
-
-        uint32_t countBytes = count * sizeof(signal::data_t::value_type);
-        from.read((char*)samples.data(), countBytes);
-        if (from.gcount() != countBytes) {
-          throw signal_file_load_error { "error while read samples" };
-        }
-
-        result.set_signal(std::move(samples));
-      }
+      uint32_t begin_time_us = from_little_endian<uint32_t>(buffer);
+      begin_time += std::chrono::microseconds(begin_time_us);
+      result.set_begin_timestamp(begin_time);
     }
-    catch (std::exception& exc) {
-      throw signal_file_load_error { exc.what() };
+
+    {  // load coords
+      from.read(buffer, kCoordsLength);
+      if (from.gcount() != kCoordsLength) {
+        throw signal_file_load_error { "error while read coords" };
+      }
+
+      uint16_t lon1 = from_little_endian<uint16_t>(buffer);
+      uint32_t lon2 = from_little_endian<uint32_t>(buffer + 2);
+      uint16_t lat1 = from_little_endian<uint16_t>(buffer + 6);
+      uint32_t lat2 = from_little_endian<uint32_t>(buffer + 8);
+      uint16_t alt1 = from_little_endian<uint16_t>(buffer + 12);
+      uint32_t alt2 = from_little_endian<uint16_t>(buffer + 14);
+
+      double lon = double(lon1) + double(lon2) / 1'000'000;
+      double lat = double(lat1) + double(lat2) / 1'000'000;
+      double alt = double(alt1) + double(alt2) / 1'000'000;
+
+      result.set_coords(lon, lat, alt);
+    }
+
+    {  // load sample rate
+      from.read(buffer, kSampleRateLength);
+      if (from.gcount() != kSampleRateLength) {
+        throw signal_file_load_error { "error while read sample rate" };
+      }
+
+      uint32_t sample_rate = from_little_endian<uint32_t>(buffer);
+      result.set_sample_rate(sample_rate);
+    }
+
+    {  // load flags
+      from.read(buffer, kFlagsLength);
+      if (from.gcount() != kFlagsLength) {
+        throw signal_file_load_error { "error while read flags" };
+      }
+
+      uint8_t flags = from_little_endian<uint8_t>(buffer);
+      result.set_flags(flags);
+    }
+
+    {  // load samples
+      from.read(buffer, kSamplesCountLength);
+      if (from.gcount() != kSamplesCountLength) {
+        throw signal_file_load_error { "error while read samples count" };
+      }
+
+      uint32_t count = from_little_endian<uint32_t>(buffer);
+      signal::data_t samples;
+      samples.reserve(count);
+
+      uint32_t countBytes = count * sizeof(signal::data_t::value_type);
+      from.read((char*)samples.data(), countBytes);
+      if (from.gcount() != countBytes) {
+        throw signal_file_load_error { "error while read samples" };
+      }
+
+      result.set_signal(std::move(samples));
     }
 
     return result;
   }
-
 }

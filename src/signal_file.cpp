@@ -26,38 +26,54 @@ namespace core::signal_file
   template<>
   void dump<std::ostream&>(std::ostream& os, const signal& sig, version ver)
   {
-    void (*dump_fn)(const signal&, std::ostream&) = nullptr;
+    try {
+      void (*dump_fn)(const signal&, std::ostream&) = nullptr;
 
-    switch (ver) {
-      case version::v2:
-        dump_fn = v2::dump;
-        break;
-      default:
-        throw signal_file_dump_error { "invalid version for dump" };
+      switch (ver) {
+        case version::v2:
+          dump_fn = v2::dump;
+          break;
+        default:
+          throw signal_file_dump_error { "invalid version for dump" };
+      }
+
+      dump_fn(sig, os);
     }
-
-    dump_fn(sig, os);
+    catch (signal_file_load_error&) {
+      throw;
+    }
+    catch (std::exception& exc) {
+      throw signal_file_load_error { exc.what() };
+    }
   }
 
   template<>
   signal load<std::istream&>(std::istream& is)
   {
-    char buffer[2] = { 0 };
-    is.read(buffer, 2);
+    try {
+      char buffer[2] = { 0 };
+      is.read(buffer, 2);
 
-    version ver = version(from_little_endian<uint16_t>(buffer));
+      version ver = version(from_little_endian<uint16_t>(buffer));
 
-    signal (*load_fn)(std::istream&) = nullptr;
+      signal (*load_fn)(std::istream&) = nullptr;
 
-    switch (ver) {
-      case version::v2:
-        load_fn = v2::load;
-        break;
-      default:
-        throw signal_file_load_error { "invalid version for load" };
+      switch (ver) {
+        case version::v2:
+          load_fn = v2::load;
+          break;
+        default:
+          throw signal_file_load_error { "invalid version for load" };
+      }
+
+      return load_fn(is);
     }
-
-    return load_fn(is);
+    catch (signal_file_load_error&) {
+      throw;
+    }
+    catch (std::exception& exc) {
+      throw signal_file_load_error { exc.what() };
+    }
   }
 
   template<>
