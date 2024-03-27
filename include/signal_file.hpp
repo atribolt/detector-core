@@ -24,7 +24,7 @@ namespace core::signal_file
     v2 = 2
   };
 
-  version default_dump_version = version::v2;
+  inline version default_dump_version = version::v2;
 
   template<class Output>
   void dump(Output dst, const signal& sig, version ver = default_dump_version) = delete;
