@@ -37,6 +37,7 @@ namespace core::signal_file
           throw signal_file_dump_error { "invalid version for dump" };
       }
 
+      os << to_little_endian(uint16_t(ver));
       dump_fn(sig, os);
     }
     catch (signal_file_load_error&) {
