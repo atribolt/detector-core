@@ -88,13 +88,13 @@ namespace core::signal_file::v2
     char buffer[kMaxSize] = { 0 };
 
     {  // load time
-      from.read(buffer, kTimeLength);
-      if (from.gcount() != kTimeLength) {
+      tm time;
+      memset(&time, 0, sizeof(tm));
+      from >> std::get_time(&time, kTimeFormat.data());
+
+      if (from.bad()) {
         throw signal_file_load_error { "error while read time" };
       }
-
-      tm time;
-      from >> std::get_time(&time, kTimeFormat.data());
 
       time_t begin_tm_s = std::mktime(&time);
       std::chrono::microseconds begin_time = std::chrono::seconds { begin_tm_s };
