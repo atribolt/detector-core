@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.20)
 
 project(detector-core
   LANGUAGES C CXX
-  VERSION 0.0.2
+  VERSION 0.1.0
 )
 
 find_package(PkgConfig REQUIRED)
 
 pkg_search_module(systemd REQUIRED IMPORTED_TARGET libsystemd)
+pkg_search_module(sysfs REQUIRED IMPORTED_TARGET libsysfs)
 
 add_library(detector-core OBJECT
   include/endian.hpp
@@ -17,6 +18,7 @@ add_library(detector-core OBJECT
   include/signal_file.hpp
   include/signal_file_v2.hpp src/signal_file_v2.cpp
   include/core_version.hpp src/signal_file.cpp
+  include/system.hpp src/system.cpp
   src/core_version.cpp
 )
 
@@ -31,6 +33,7 @@ target_include_directories(detector-core
 target_link_libraries(detector-core
   PUBLIC
     PkgConfig::systemd
+    PkgConfig::sysfs
 )
 
 set_target_properties(detector-core
