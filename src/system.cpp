@@ -9,7 +9,9 @@ static std::string get_motherboard_serial()
   sysfs_class_device* dev = sysfs_open_class_device("dmi", "id");
   if (dev != nullptr) {
     sysfs_attribute* attr = sysfs_get_classdev_attr(dev, "board_serial");
-    serial = attr->value;
+    if (attr) {
+      serial = attr->value;
+    }
     sysfs_close_class_device(dev);
   }
   return serial;
@@ -36,13 +38,11 @@ static std::string get_mac_address()
         sysfs_attribute* attr = sysfs_get_classdev_attr(dev, "address");
         if (attr) {
           mac = attr->value;
-          sysfs_close_attribute(attr);
           break;
         }
       }
     }
 
-    sysfs_close_list(devs);
     sysfs_close_class(cls);
   }
 

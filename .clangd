@@ -1,0 +1,8 @@
+InlayHints:
+  Enabled: Yes
+  ParameterNames: No
+  DeducedTypes: Yes
+  TypeNameLimit: 10
+
+Hover:
+  ShowAKA: Yes
