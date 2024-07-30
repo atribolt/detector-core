@@ -29,7 +29,7 @@ void core::details::log_message(int priority, const char* file, const char* line
   int required = vsnprintf(nullptr, 0, format, list);
   va_end(list);
 
-  std::string buffer(required + 1, '\0');
+  std::string buffer(required, '\0');
 
   va_start(list, format);
   vsnprintf(buffer.data(), buffer.size(), format, list);
