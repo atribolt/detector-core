@@ -32,10 +32,10 @@ void core::details::log_message(int priority, const char* file, const char* line
   std::string buffer(required, '\0');
 
   va_start(list, format);
-  vsnprintf(buffer.data(), buffer.size(), format, list);
+  vsnprintf(buffer.data(), required + 1, format, list);
   va_end(list);
 
-  std::osyncstream { std::cout } << time.tv_sec << '.' << time.tv_nsec << ": [" << priority << "] {" << func << ":"
-                                 << line << "} " << buffer << '\n';
+  std::osyncstream { std::cout } << time.tv_sec << '.' << time.tv_nsec << ": [" << priority << "] {" << func << "} "
+                                 << buffer << '\n';
 #endif
 }
