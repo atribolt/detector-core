@@ -36,6 +36,6 @@ void core::details::log_message(int priority, const char* file, const char* line
   va_end(list);
 
   std::osyncstream { std::cout } << time.tv_sec << '.' << time.tv_nsec << ": [" << priority << "] {" << func << ":"
-                                 << line << "} " << buffer;
+                                 << line << "} " << buffer << '\n';
 #endif
 }
