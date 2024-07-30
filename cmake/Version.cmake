@@ -7,7 +7,7 @@ find_program(GIT git)
 if (NOT DEFINED GIT-NOTFOUND)
   # Load TWEAK version
   execute_process(
-    COMMAND ${GIT} rev-list --count HEAD -- version
+    COMMAND bash -c "git rev-list --count $(git log --pretty=format:%h -1 -- version)..HEAD"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     OUTPUT_VARIABLE GPIO_CORE_VERSION_TWEAK
 
@@ -21,7 +21,7 @@ if (NOT DEFINED GIT-NOTFOUND)
 
   # Load SHORT HASH
   execute_process(
-    COMMAND ${GIT} rev-parse --short HEAD
+    COMMAND git rev-parse --short HEAD
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     OUTPUT_VARIABLE GPIO_CORE_COMMIT
 

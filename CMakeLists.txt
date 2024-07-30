@@ -7,6 +7,8 @@ project(detector-core
   VERSION ${GPIO_CORE_VERSION}
 )
 
+configure_file(detector_core_version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/detector_core_version.hpp)
+
 find_package(PkgConfig REQUIRED)
 
 pkg_search_module(systemd REQUIRED IMPORTED_TARGET libsystemd)
@@ -22,6 +24,8 @@ add_library(detector-core OBJECT
   include/core_version.hpp src/signal_file.cpp
   include/system.hpp src/system.cpp
   src/core_version.cpp
+
+  ${CMAKE_CURRENT_BINARY_DIR}/detector_core_version.hpp
 
   version
 )
@@ -45,5 +49,3 @@ set_target_properties(detector-core
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED Yes
 )
-
-configure_file(detector_core_version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/detector_core_version.hpp)
