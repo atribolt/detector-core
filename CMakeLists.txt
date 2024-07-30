@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 
+include(cmake/Version.cmake)
+
 project(detector-core
   LANGUAGES C CXX
-  VERSION 0.1.1
+  VERSION ${GPIO_CORE_VERSION}
 )
 
 find_package(PkgConfig REQUIRED)
@@ -20,6 +22,8 @@ add_library(detector-core OBJECT
   include/core_version.hpp src/signal_file.cpp
   include/system.hpp src/system.cpp
   src/core_version.cpp
+
+  version
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR Yes)

@@ -1,3 +1,5 @@
 #pragma once
 
-#define DETECTOR_CORE_VERSION "@detector-core_VERSION@"
+#define DETECTOR_CORE_VERSION "@GPIO_CORE_VERSION@"
+#define DETECTOR_CORE_COMMIT "@GPIO_CORE_COMMIT@"
+

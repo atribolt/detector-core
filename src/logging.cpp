@@ -1,14 +1,41 @@
 #include "include/logging.hpp"
 
-#include <systemd/sd-journal.h>
+#include <cstdarg>
 
-int core::details::sd_journal_print_with_location(int priority, const char* file, const char* line, const char* func,
-                                                  const char* format, ...)
+#ifdef NDEBUG
+#  include <systemd/sd-journal.h>
+#else
+#  include <ctime>
+#  include <iostream>
+#  include <syncstream>
+#endif
+
+void core::details::log_message(int priority, const char* file, const char* line, const char* func, const char* format,
+                                ...)
 {
+#ifdef NDEBUG
   va_list list;
   va_start(list, format);
-  int status = sd_journal_printv_with_location(priority, file, line, func, format, list);
+  sd_journal_printv_with_location(priority, file, line, func, format, list);
+  va_end(list);
+#else
+  // костыль для отладки
+
+  std::timespec time;
+  clock_gettime(CLOCK_MONOTONIC, &time);
+
+  va_list list;
+  va_start(list, format);
+  int required = vsnprintf(nullptr, 0, format, list);
   va_end(list);
 
-  return status;
+  std::string buffer(required + 1, '\0');
+
+  va_start(list, format);
+  vsnprintf(buffer.data(), buffer.size(), format, list);
+  va_end(list);
+
+  std::osyncstream { std::cout } << time.tv_sec << '.' << time.tv_nsec << ": [" << priority << "] {" << func << ":"
+                                 << line << "} " << buffer;
+#endif
 }
