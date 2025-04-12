@@ -201,3 +201,63 @@
     s = from_little_endian(sample);
   }
   ```
+
+---
+
+# Структура файла v3
+
+Файл упакован в формат `msgpack`
+
+## Структура
+
+  ```yaml
+  schema:
+    type: object
+    properties:
+      - type: map
+        description: metadata
+        properties:
+          time:
+            type: string
+            format: "yyyyMMddhhmmss"
+            example: "20250412220211"
+            description: время начала сигнала (точность до секунды)
+          time_us:
+            type: integer
+            minimum: 0
+            maximum: 1000000
+            description: кол-во микросекунд от начала секунды
+          coords:
+            type: map
+            description: координаты приема сигнала
+            properties:
+              longitude:
+                description: широта
+                type: float
+                minimum: -180
+                maximum: 180
+              latitude:
+                description: долгота
+                type: float
+                minimum: -90
+                maximum: 90
+              altitude:
+                description: высота над уровнем моря
+                type: float
+          sample_rate:
+            type: integer
+            description: частота сэммплирования сигнала (герц)
+            example: 500000
+          flags:
+            type: bin
+            description: флаги сигнала
+            bits:
+              - index: 0
+                description: была выполнена синхронизация по PPS
+              - index: 1
+                description: была обнаружена перегрузка при оцифровке
+      - type: array
+        description: сигнал
+        items:
+          type: integer
+  ```

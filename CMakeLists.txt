@@ -14,6 +14,14 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(systemd REQUIRED IMPORTED_TARGET libsystemd)
 pkg_search_module(sysfs REQUIRED IMPORTED_TARGET libsysfs)
 
+# ----- MsgPack -----
+set(MSGPACK_CXX20 Yes CACHE BOOL "")
+set(MSGPACK_USE_BOOST No CACHE BOOL "")
+set(MSGPACK_BUILD_DOCS No CACHE BOOL "")
+set(MSGPACK_BUILD_EXAMPLES No CACHE BOOL "")
+add_subdirectory(thirdparty/msgpack)
+# -------------------
+
 add_library(detector-core OBJECT
   include/endian.hpp
   include/logging.hpp src/logging.cpp
@@ -21,6 +29,7 @@ add_library(detector-core OBJECT
   include/sample.hpp
   include/signal_file.hpp
   include/signal_file_v2.hpp src/signal_file_v2.cpp
+  include/signal_file_v3.hpp src/signal_file_v3.cpp
   include/core_version.hpp src/signal_file.cpp
   include/system.hpp src/system.cpp
   src/core_version.cpp
@@ -40,6 +49,7 @@ target_include_directories(detector-core
 
 target_link_libraries(detector-core
   PUBLIC
+    msgpack-cxx
     PkgConfig::systemd
     PkgConfig::sysfs
 )
