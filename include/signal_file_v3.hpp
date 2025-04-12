@@ -5,7 +5,11 @@
 #include <istream>
 #include <ostream>
 
-namespace core::signal_file::v2
+/**
+ * V3 signal has msgpack format
+ */
+
+namespace core::signal_file::v3
 {
   void dump(const signal& sig, std::ostream& to);
   signal load(std::istream& from);

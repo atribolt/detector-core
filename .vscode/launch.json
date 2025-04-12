@@ -6,8 +6,8 @@
             "request": "launch",
             "name": "Launch",
             "program": "${workspaceFolder}/build/detector-gpio",
-            "args": ["--config=detector.conf"],
-            "cwd": "${workspaceFolder}/build"
+            "args": ["--config=config/my-detector.conf"],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
