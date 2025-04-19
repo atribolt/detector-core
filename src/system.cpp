@@ -1,6 +1,10 @@
 #include "include/system.hpp"
 
+#include <fstream>
+#include <algorithm>
+
 #include <sysfs/libsysfs.h>
+
 
 static std::string get_motherboard_serial()
 {
@@ -20,6 +24,7 @@ static std::string get_motherboard_serial()
 static std::string get_mac_address()
 {
   constexpr std::string_view LO = "lo";
+  constexpr size_t NetDevAddrLen = 17;
 
   std::string mac;
 
@@ -27,26 +32,47 @@ static std::string get_mac_address()
   if (cls) {
     dlist* devs = sysfs_get_class_devices(cls);
 
-    dl_node* iter = devs->head;
-    for (int i = 0; i <= devs->count; ++i) {
-      if (iter->data == nullptr) {
-        continue;
-      }
-
-      sysfs_class_device* dev = (sysfs_class_device*)iter->data;
-      if (strncmp(dev->name, LO.data(), LO.size()) != 0) {
-        sysfs_attribute* attr = sysfs_get_classdev_attr(dev, "address");
+    sysfs_class_device* iter;
+    dlist_for_each_data(devs, iter, sysfs_class_device) {
+      if (strncmp(iter->name, LO.data(), LO.size()) != 0) {
+        sysfs_attribute* attr = sysfs_get_classdev_attr(iter, "address");
         if (attr) {
-          mac = attr->value;
+          mac.insert(mac.end(), attr->value, attr->value + NetDevAddrLen);
           break;
         }
       }
     }
-
     sysfs_close_class(cls);
   }
 
   return mac;
+}
+
+static std::string get_cpu_serial()
+{
+  constexpr std::string_view Field = "Serial";
+
+  std::string serial;
+  std::ifstream cpuinfo("/proc/cpuinfo");
+
+  if (cpuinfo)
+  {
+    std::string line;
+
+    while (std::getline(cpuinfo, line)) {
+      if (line > Field) {
+        auto iter = std::find(line.rbegin(), line.rend(), ':');
+        if (iter != line.rend()) {
+          auto i = iter.base();
+          while(*i == ' ') ++i;
+          serial = std::string(i, line.end());
+        }
+      }
+    }
+  }
+
+  cpuinfo.close();
+  return serial;
 }
 
 core::system::info core::system::get_system_info()
@@ -54,5 +80,6 @@ core::system::info core::system::get_system_info()
   info result;
   result.motherboard_id = get_motherboard_serial();
   result.mac_address = get_mac_address();
+  result.cpu_serial = get_cpu_serial();
   return result;
 }
