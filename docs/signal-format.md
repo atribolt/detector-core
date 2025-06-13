@@ -208,56 +208,24 @@
 
 Файл упакован в формат `msgpack`
 
-## Структура
+## Структура файла
 
-  ```yaml
-  schema:
-    type: object
-    properties:
-      - type: map
-        description: metadata
-        properties:
-          time:
-            type: string
-            format: "yyyyMMddhhmmss"
-            example: "20250412220211"
-            description: время начала сигнала (точность до секунды)
-          time_us:
-            type: integer
-            minimum: 0
-            maximum: 1000000
-            description: кол-во микросекунд от начала секунды
-          coords:
-            type: map
-            description: координаты приема сигнала
-            properties:
-              longitude:
-                description: широта
-                type: float
-                minimum: -180
-                maximum: 180
-              latitude:
-                description: долгота
-                type: float
-                minimum: -90
-                maximum: 90
-              altitude:
-                description: высота над уровнем моря
-                type: float
-          sample_rate:
-            type: integer
-            description: частота сэммплирования сигнала (герц)
-            example: 500000
-          flags:
-            type: bin
-            description: флаги сигнала
-            bits:
-              - index: 0
-                description: была выполнена синхронизация по PPS
-              - index: 1
-                description: была обнаружена перегрузка при оцифровке
-      - type: array
-        description: сигнал
-        items:
-          type: integer
-  ```
+> Структура файла не содержит ключей как в привычном JSON. Только поля в описанном ниже порядке.
+> Если порядок нарушен, файл считается невалидным сигналом.
+
+Порядок данных в файле сигнала (в квадратных скобках указан размер в байтах)
+1. `string[14]` - время в формате `yyyymmddHHMMSS`
+2. `uint` - кол-во микросекунд от начала секунды
+3. `double` - долгота в градусах
+4. `double` - широта в градусах
+5. `double` - высота над уровнем моря в метрах
+6. `uint` - частота дискретизации сигнала
+7. `uint` - битовые флаги сигнала
+    - `0` - флаги не установлены
+    - `1` - сигнал захвачен с перегрузкой по АЦП
+    - `2` - сигнал захвачен с синхронизацией по PPS
+8. `uint` - тип антенны
+    - `0` - неизвестный тип антенны
+    - `1` - минивип
+    - `2` - магнитная антенна
+9. `array uint` - захваченный сигнал

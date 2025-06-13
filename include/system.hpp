@@ -5,7 +5,8 @@
 namespace core::system
 {
   struct info {
-    [[deprecated("Use 'cpu_serial' instead")]] std::string motherboard_id;
+    [[deprecated("Use 'cpu_serial' instead")]]
+    std::string motherboard_id;
 
     std::string cpu_serial;
     std::string mac_address;

@@ -21,10 +21,11 @@ namespace core::signal_file
 
   enum class version {
     unknown = 0,
-    v2 = 2
+    v2 = 2,
+    v3 = 3
   };
 
-  inline version default_dump_version = version::v2;
+  inline version default_dump_version = version::v3;
 
   template<class Output>
   void dump(Output dst, const signal& sig, version ver = default_dump_version) = delete;

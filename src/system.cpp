@@ -1,10 +1,8 @@
 #include "include/system.hpp"
 
-#include <fstream>
 #include <algorithm>
-
+#include <fstream>
 #include <sysfs/libsysfs.h>
-
 
 static std::string get_motherboard_serial()
 {
@@ -33,7 +31,8 @@ static std::string get_mac_address()
     dlist* devs = sysfs_get_class_devices(cls);
 
     sysfs_class_device* iter;
-    dlist_for_each_data(devs, iter, sysfs_class_device) {
+    dlist_for_each_data(devs, iter, sysfs_class_device)
+    {
       if (strncmp(iter->name, LO.data(), LO.size()) != 0) {
         sysfs_attribute* attr = sysfs_get_classdev_attr(iter, "address");
         if (attr) {
@@ -55,8 +54,7 @@ static std::string get_cpu_serial()
   std::string serial;
   std::ifstream cpuinfo("/proc/cpuinfo");
 
-  if (cpuinfo)
-  {
+  if (cpuinfo) {
     std::string line;
 
     while (std::getline(cpuinfo, line)) {
@@ -64,7 +62,9 @@ static std::string get_cpu_serial()
         auto iter = std::find(line.rbegin(), line.rend(), ':');
         if (iter != line.rend()) {
           auto i = iter.base();
-          while(*i == ' ') ++i;
+          while (*i == ' ') {
+            ++i;
+          }
           serial = std::string(i, line.end());
         }
       }

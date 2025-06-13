@@ -9,13 +9,11 @@
 
 namespace core
 {
-  enum class antenna_type : uint8_t
-  {
+  enum class antenna_type : uint8_t {
     unknown,
     miniwhip,
     magnetic
   };
-
 
   class signal {
   public:

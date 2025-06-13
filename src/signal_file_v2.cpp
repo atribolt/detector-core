@@ -22,7 +22,6 @@ namespace
   constexpr std::string_view kTimeFormat = "%Y%m%d%H%M%S";
 }
 
-
 void core::signal_file::v2::dump(const signal& sig, std::ostream& to)
 {
   auto samples = sig.samples();
