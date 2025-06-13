@@ -75,6 +75,11 @@ namespace core
     return _flags;
   }
 
+  antenna_type signal::antenna() const
+  {
+    return _antenna_type;
+  }
+
   const signal::data_t& signal::samples() const
   {
     return _signal;

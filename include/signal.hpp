@@ -63,6 +63,7 @@ namespace core
     uint32_t sample_rate() const;
     uint8_t flags() const;
     const data_t& samples() const;
+    antenna_type antenna() const;
 
   private:
     double _lon { 0.0 };
