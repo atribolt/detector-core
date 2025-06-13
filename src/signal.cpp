@@ -29,6 +29,11 @@ namespace core
     _flags = flags;
   }
 
+  void signal::set_antenna_type(antenna_type type)
+  {
+    _antenna_type = type;
+  }
+
   void signal::swap(signal& o)
   {
     std::swap(_lon, o._lon);

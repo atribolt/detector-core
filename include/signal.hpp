@@ -9,6 +9,14 @@
 
 namespace core
 {
+  enum class antenna_type : uint8_t
+  {
+    unknown,
+    miniwhip,
+    magnetic
+  };
+
+
   class signal {
   public:
     using sample_t = decltype(sample::data);
@@ -43,6 +51,7 @@ namespace core
 
     void set_signal(data_t&& data);
     void set_flags(uint8_t flags);
+    void set_antenna_type(antenna_type type);
 
     void swap(signal& other);
 
@@ -64,6 +73,7 @@ namespace core
     uint32_t _sample_rate { 1 };
 
     uint8_t _flags { 0 };
+    antenna_type _antenna_type { antenna_type::unknown };
     data_t _signal;  // LE data
   };
 }
