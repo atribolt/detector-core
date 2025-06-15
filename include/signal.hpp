@@ -9,13 +9,11 @@
 
 namespace core
 {
-  enum class antenna_type : uint8_t
-  {
+  enum class antenna_type : uint8_t {
     unknown,
     miniwhip,
     magnetic
   };
-
 
   class signal {
   public:
@@ -40,7 +38,7 @@ namespace core
         auto sbeg = _signal.begin();
 
         while (begin != end) {
-          _flags |= begin->flags;
+          this->join_flags(begin->flags);
           *sbeg = to_little_endian<sample_t>(begin->data);
 
           ++begin;
@@ -49,8 +47,12 @@ namespace core
       }
     }
 
+    void set_flag(uint8_t bit);
+    void unset_flag(uint8_t bit);
+    void join_flags(uint8_t flags);
+
     void set_signal(data_t&& data);
-    void set_flags(uint8_t flags);
+    void reset_flags(uint8_t flags = 0);
     void set_antenna_type(antenna_type type);
 
     void swap(signal& other);

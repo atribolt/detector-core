@@ -2,7 +2,6 @@
 
 #include "signal_file.hpp"
 
-#include <cinttypes>
 #include <istream>
 #include <ostream>
 

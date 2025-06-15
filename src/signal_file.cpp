@@ -1,9 +1,9 @@
 #include "include/signal_file.hpp"
 
 #include "include/endian.hpp"
-#include "include/logging.hpp"
 #include "include/signal.hpp"
 #include "include/signal_file_v2.hpp"
+#include "include/signal_file_v3.hpp"
 
 #include <fstream>
 
@@ -32,6 +32,9 @@ namespace core::signal_file
       switch (ver) {
         case version::v2:
           dump_fn = v2::dump;
+          break;
+        case version::v3:
+          dump_fn = v3::dump;
           break;
         default:
           throw signal_file_dump_error { "invalid version for dump" };
@@ -63,6 +66,9 @@ namespace core::signal_file
       switch (ver) {
         case version::v2:
           load_fn = v2::load;
+          break;
+        case version::v3:
+          load_fn = v3::load;
           break;
         default:
           throw signal_file_load_error { "invalid version for load" };

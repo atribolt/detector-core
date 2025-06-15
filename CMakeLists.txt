@@ -7,12 +7,23 @@ project(detector-core
   VERSION ${GPIO_CORE_VERSION}
 )
 
+set(CMAKE_CXX_STANDARD 20)
+set(CAMKE_CXX_STANDARD_REQUIRED Yes)
+
 configure_file(detector_core_version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/detector_core_version.hpp)
 
 find_package(PkgConfig REQUIRED)
 
 pkg_search_module(systemd REQUIRED IMPORTED_TARGET libsystemd)
 pkg_search_module(sysfs REQUIRED IMPORTED_TARGET libsysfs)
+
+# ----- MsgPack -----
+set(MSGPACK_CXX20 Yes CACHE BOOL "")
+set(MSGPACK_USE_BOOST No CACHE BOOL "")
+set(MSGPACK_BUILD_DOCS No CACHE BOOL "")
+set(MSGPACK_BUILD_EXAMPLES No CACHE BOOL "")
+add_subdirectory(thirdparty/msgpack)
+# -------------------
 
 add_library(detector-core OBJECT
   include/endian.hpp
@@ -21,6 +32,7 @@ add_library(detector-core OBJECT
   include/sample.hpp
   include/signal_file.hpp
   include/signal_file_v2.hpp src/signal_file_v2.cpp
+  include/signal_file_v3.hpp src/signal_file_v3.cpp
   include/core_version.hpp src/signal_file.cpp
   include/system.hpp src/system.cpp
   src/core_version.cpp
@@ -40,6 +52,7 @@ target_include_directories(detector-core
 
 target_link_libraries(detector-core
   PUBLIC
+    msgpack-cxx
     PkgConfig::systemd
     PkgConfig::sysfs
 )
@@ -49,3 +62,21 @@ set_target_properties(detector-core
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED Yes
 )
+
+
+option(WITH_TEST Off "Build and run test")
+if (WITH_TEST)
+  enable_testing()
+
+  add_executable(test_signal_v3
+    tests/test_signal_v3.cpp
+  )
+  target_link_libraries(test_signal_v3 PRIVATE detector-core)
+
+
+  add_test(
+    NAME test_signal_v3
+    COMMAND test_signal_v3
+  )
+
+endif()
