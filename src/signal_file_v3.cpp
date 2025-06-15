@@ -1,6 +1,5 @@
 #include "include/signal_file_v3.hpp"
 
-#include "include/endian.hpp"
 #include "include/signal.hpp"
 
 #include <msgpack.hpp>
