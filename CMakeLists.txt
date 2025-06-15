@@ -7,6 +7,9 @@ project(detector-core
   VERSION ${GPIO_CORE_VERSION}
 )
 
+set(CMAKE_CXX_STANDARD 20)
+set(CAMKE_CXX_STANDARD_REQUIRED Yes)
+
 configure_file(detector_core_version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/detector_core_version.hpp)
 
 find_package(PkgConfig REQUIRED)
@@ -59,3 +62,21 @@ set_target_properties(detector-core
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED Yes
 )
+
+
+option(WITH_TEST Off "Build and run test")
+if (WITH_TEST)
+  enable_testing()
+
+  add_executable(test_signal_v3
+    tests/test_signal_v3.cpp
+  )
+  target_link_libraries(test_signal_v3 PRIVATE detector-core)
+
+
+  add_test(
+    NAME test_signal_v3
+    COMMAND test_signal_v3
+  )
+
+endif()

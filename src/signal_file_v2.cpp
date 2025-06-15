@@ -93,7 +93,7 @@ core::signal core::signal_file::v2::load(std::istream& from)
       throw signal_file_load_error { "error while read time" };
     }
 
-    time_t begin_tm_s = std::mktime(&time);
+    time_t begin_tm_s = timegm(&time);
     std::chrono::microseconds begin_time = std::chrono::seconds { begin_tm_s };
 
     from.read(buffer, kTimeMicrosecondsLength);
@@ -143,7 +143,7 @@ core::signal core::signal_file::v2::load(std::istream& from)
     }
 
     uint8_t flags = from_little_endian<uint8_t>(buffer);
-    result.set_flags(flags);
+    result.reset_flags(flags);
   }
 
   {  // load samples

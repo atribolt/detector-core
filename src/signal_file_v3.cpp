@@ -20,6 +20,7 @@ void core::signal_file::v3::dump(const signal& sig, std::ostream& os)
   std::string time { kTimeDefault };
   time_t ts = begin_time_s.count();
   std::strftime(time.data(), time.size(), kTimeFormat.data(), std::gmtime(&ts));
+  time.pop_back();
 
   msgpack::pack(os, time);
   msgpack::pack(os, begin_time_us.count());
@@ -37,8 +38,8 @@ core::signal core::signal_file::v3::load(std::istream& is)
   enum class field {
     date_time,
     microseconds,
-    longitude,
     latitude,
+    longitude,
     altitude,
     sample_rate,
     flags,
@@ -78,7 +79,7 @@ core::signal core::signal_file::v3::load(std::istream& is)
           if (errno) {
             throw signal_file_load_error { "error while read time microseconds" };
           }
-          begin_time = std::chrono::seconds(std::mktime(&time));
+          begin_time = std::chrono::seconds(timegm(&time));
 
           process = field::microseconds;
           break;
@@ -88,18 +89,18 @@ core::signal core::signal_file::v3::load(std::istream& is)
           uint32_t us = obj->as<uint32_t>();
           begin_time += std::chrono::microseconds(us);
 
-          process = field::longitude;
+          process = field::latitude;
           break;
         }
 
         case field::longitude: {
           obj->convert(lon);
-          process = field::latitude;
+          process = field::altitude;
           break;
         }
         case field::latitude: {
           obj->convert(lat);
-          process = field::altitude;
+          process = field::longitude;
           break;
         }
         case field::altitude: {
@@ -109,7 +110,7 @@ core::signal core::signal_file::v3::load(std::istream& is)
         }
         case field::sample_rate: {
           obj->convert(sample_rate);
-          process = field::longitude;
+          process = field::flags;
           break;
         }
         case field::flags: {
@@ -147,7 +148,7 @@ core::signal core::signal_file::v3::load(std::istream& is)
   sig.set_begin_timestamp(begin_time);
   sig.set_coords(lon, lat, alt);
   sig.set_sample_rate(sample_rate);
-  sig.set_flags(flags);
+  sig.reset_flags(flags);
   sig.set_antenna_type(antenna);
   sig.set_signal(std::move(samples));
   return sig;

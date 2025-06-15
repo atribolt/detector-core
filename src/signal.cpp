@@ -19,12 +19,27 @@ namespace core
     _sample_rate = sr;
   }
 
+  void signal::set_flag(uint8_t bit)
+  {
+    _flags |= 1u << bit;
+  }
+
+  void signal::unset_flag(uint8_t bit)
+  {
+    _flags &= ~(1u << bit);
+  }
+
+  void signal::join_flags(uint8_t flags)
+  {
+    _flags |= flags;
+  }
+
   void signal::set_signal(data_t&& data)
   {
     std::swap(_signal, data);
   }
 
-  void signal::set_flags(uint8_t flags)
+  void signal::reset_flags(uint8_t flags)
   {
     _flags = flags;
   }
