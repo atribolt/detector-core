@@ -28,6 +28,9 @@ void core::signal_file::v3::dump(const signal& sig, std::ostream& os)
   msgpack::pack(os, sig.longitude());
   msgpack::pack(os, sig.altitude());
   msgpack::pack(os, uint32_t(sig.sample_rate()));
+  msgpack::pack(os, uint16_t(sig.adc().load_resistance));
+  msgpack::pack(os, uint8_t(sig.adc().resolution));
+  msgpack::pack(os, double(sig.adc().reference_voltage));
   msgpack::pack(os, uint8_t(sig.flags()));
   msgpack::pack(os, uint8_t(sig.antenna()));
   msgpack::pack(os, sig.samples());
@@ -42,6 +45,9 @@ core::signal core::signal_file::v3::load(std::istream& is)
     longitude,
     altitude,
     sample_rate,
+    adc_load_resistance,
+    adc_resolution,
+    adc_reference_voltage,
     flags,
     antenna,
     signal,
@@ -54,10 +60,10 @@ core::signal core::signal_file::v3::load(std::istream& is)
 
   std::chrono::microseconds begin_time;
   double lon, lat, alt;
-  uint32_t sample_rate;
   uint8_t flags;
   antenna_type antenna;
   signal::data_t samples;
+  adc_info adc;
 
   field process = field::date_time;
   while (process != field::completed) {
@@ -109,7 +115,22 @@ core::signal core::signal_file::v3::load(std::istream& is)
           break;
         }
         case field::sample_rate: {
-          obj->convert(sample_rate);
+          obj->convert(adc.sample_rate);
+          process = field::adc_load_resistance;
+          break;
+        }
+        case field::adc_load_resistance: {
+          obj->convert(adc.load_resistance);
+          process = field::adc_resolution;
+          break;
+        }
+        case field::adc_resolution: {
+          obj->convert(adc.resolution);
+          process = field::adc_reference_voltage;
+          break;
+        }
+        case field::adc_reference_voltage: {
+          obj->convert(adc.reference_voltage);
           process = field::flags;
           break;
         }
@@ -147,7 +168,7 @@ core::signal core::signal_file::v3::load(std::istream& is)
   signal sig;
   sig.set_begin_timestamp(begin_time);
   sig.set_coords(lon, lat, alt);
-  sig.set_sample_rate(sample_rate);
+  sig.set_adc_info(adc);
   sig.reset_flags(flags);
   sig.set_antenna_type(antenna);
   sig.set_signal(std::move(samples));
