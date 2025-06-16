@@ -26,6 +26,7 @@ int main()
   s0.set_coords(Longitude, Latitude, Altitude);
   s0.set_sample_rate(SampleRate);
   s0.set_flag(7);
+  s0.set_adc_info({ .sample_rate = 500'000, .load_resistance = 1000, .resolution = 10, .reference_voltage = 3.3f });
 
   std::stringstream ss;
   core::signal_file::dump<std::ostream&>(ss, s0, core::signal_file::version::v3);
@@ -33,6 +34,7 @@ int main()
   core::signal s1 = core::signal_file::load<std::istream&>(ss);
   assert(s1.flags() == s0.flags());
   assert(s1.sample_rate() == s0.sample_rate());
+  assert(s1.adc() == s0.adc());
   assert(s1.longitude() == s0.longitude());
   assert(s1.latitude() == s0.latitude());
   assert(s1.altitude() == s0.altitude());

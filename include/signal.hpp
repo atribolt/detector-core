@@ -4,7 +4,6 @@
 #include "sample.hpp"
 
 #include <chrono>
-#include <cinttypes>
 #include <vector>
 
 namespace core
@@ -14,6 +13,15 @@ namespace core
     miniwhip,
     magnetic
   };
+
+  struct adc_info {
+    uint32_t sample_rate;
+    uint16_t load_resistance;
+    uint8_t resolution;
+    float reference_voltage;
+  };
+
+  bool operator==(const adc_info& a, const adc_info& b);
 
   class signal {
   public:
@@ -54,6 +62,7 @@ namespace core
     void set_signal(data_t&& data);
     void reset_flags(uint8_t flags = 0);
     void set_antenna_type(antenna_type type);
+    void set_adc_info(adc_info info);
 
     void swap(signal& other);
 
@@ -66,6 +75,7 @@ namespace core
     uint8_t flags() const;
     const data_t& samples() const;
     antenna_type antenna() const;
+    adc_info adc() const;
 
   private:
     double _lon { 0.0 };
@@ -73,7 +83,7 @@ namespace core
     double _alt { 0.0 };
 
     std::chrono::microseconds _begin_timestamp;
-    uint32_t _sample_rate { 1 };
+    adc_info _adc_info;
 
     uint8_t _flags { 0 };
     antenna_type _antenna_type { antenna_type::unknown };

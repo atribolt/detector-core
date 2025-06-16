@@ -16,7 +16,7 @@ namespace core
 
   void signal::set_sample_rate(uint32_t sr)
   {
-    _sample_rate = sr;
+    _adc_info.sample_rate = sr;
   }
 
   void signal::set_flag(uint8_t bit)
@@ -49,13 +49,18 @@ namespace core
     _antenna_type = type;
   }
 
+  void signal::set_adc_info(adc_info info)
+  {
+    _adc_info = info;
+  }
+
   void signal::swap(signal& o)
   {
     std::swap(_lon, o._lon);
     std::swap(_lat, o._lat);
     std::swap(_alt, o._alt);
     std::swap(_begin_timestamp, o._begin_timestamp);
-    std::swap(_sample_rate, o._sample_rate);
+    std::swap(_adc_info, o._adc_info);
     std::swap(_flags, o._flags);
     std::swap(_signal, o._signal);
   }
@@ -82,7 +87,7 @@ namespace core
 
   uint32_t signal::sample_rate() const
   {
-    return _sample_rate;
+    return _adc_info.sample_rate;
   }
 
   uint8_t signal::flags() const
@@ -95,8 +100,19 @@ namespace core
     return _antenna_type;
   }
 
+  adc_info signal::adc() const
+  {
+    return _adc_info;
+  }
+
   const signal::data_t& signal::samples() const
   {
     return _signal;
+  }
+
+  bool operator==(const adc_info& a, const adc_info& b)
+  {
+    return (a.load_resistance == b.load_resistance) && (a.reference_voltage == b.reference_voltage)
+        && (a.resolution == b.resolution) && (a.sample_rate == b.sample_rate);
   }
 }
