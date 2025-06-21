@@ -31,6 +31,15 @@ add_library(detector-core OBJECT
   include/signal.hpp src/signal.cpp
   include/sample.hpp
   include/signal_file.hpp
+  include/gpio/gpio.hpp src/gpio/gpio.cpp
+  include/gpio/gpio_defs.hpp
+  include/gpio/gpio_types.hpp
+  include/gpio/boards/board.hpp src/gpio/board.cpp
+  include/gpio/boards/orangepi_one_h3.hpp src/gpio/orangepi_one_h3.cpp
+  include/gpio/boards/simulate_gpio.hpp src/gpio/simulate_gpio.cpp
+  include/utils/ring_buffer.hpp
+  include/utils/ring_buffer_iterator.hpp
+  include/utils/simple_vector.hpp
   include/signal_file_v2.hpp src/signal_file_v2.cpp
   include/signal_file_v3.hpp src/signal_file_v3.cpp
   include/core_version.hpp src/signal_file.cpp
