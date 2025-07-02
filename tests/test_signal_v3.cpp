@@ -26,7 +26,7 @@ int main()
   s0.set_coords(Longitude, Latitude, Altitude);
   s0.set_sample_rate(SampleRate);
   s0.set_flag(7);
-  s0.set_adc_info({ .sample_rate = 500'000, .load_resistance = 1000, .resolution = 10, .reference_voltage = 3.3f });
+  s0.set_adc_info({ .sample_rate = 500'000, .load_resistance = 1000, .bits = 10, .reference_voltage = 3.3f });
 
   std::stringstream ss;
   core::signal_file::dump<std::ostream&>(ss, s0, core::signal_file::version::v3);

@@ -29,7 +29,7 @@ void core::signal_file::v3::dump(const signal& sig, std::ostream& os)
   msgpack::pack(os, sig.altitude());
   msgpack::pack(os, uint32_t(sig.sample_rate()));
   msgpack::pack(os, uint16_t(sig.adc().load_resistance));
-  msgpack::pack(os, uint8_t(sig.adc().resolution));
+  msgpack::pack(os, uint8_t(sig.adc().bits));
   msgpack::pack(os, double(sig.adc().reference_voltage));
   msgpack::pack(os, uint8_t(sig.flags()));
   msgpack::pack(os, uint8_t(sig.antenna()));
@@ -46,7 +46,7 @@ core::signal core::signal_file::v3::load(std::istream& is)
     altitude,
     sample_rate,
     adc_load_resistance,
-    adc_resolution,
+    adc_bits,
     adc_reference_voltage,
     flags,
     antenna,
@@ -121,11 +121,11 @@ core::signal core::signal_file::v3::load(std::istream& is)
         }
         case field::adc_load_resistance: {
           obj->convert(adc.load_resistance);
-          process = field::adc_resolution;
+          process = field::adc_bits;
           break;
         }
-        case field::adc_resolution: {
-          obj->convert(adc.resolution);
+        case field::adc_bits: {
+          obj->convert(adc.bits);
           process = field::adc_reference_voltage;
           break;
         }

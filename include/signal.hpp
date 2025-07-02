@@ -17,7 +17,7 @@ namespace core
   struct adc_info {
     uint32_t sample_rate;
     uint16_t load_resistance;
-    uint8_t resolution;
+    uint8_t bits;
     float reference_voltage;
   };
 

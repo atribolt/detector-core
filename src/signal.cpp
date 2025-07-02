@@ -113,6 +113,6 @@ namespace core
   bool operator==(const adc_info& a, const adc_info& b)
   {
     return (a.load_resistance == b.load_resistance) && (a.reference_voltage == b.reference_voltage)
-        && (a.resolution == b.resolution) && (a.sample_rate == b.sample_rate);
+        && (a.bits == b.bits) && (a.sample_rate == b.sample_rate);
   }
 }
