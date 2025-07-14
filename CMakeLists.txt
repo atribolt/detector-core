@@ -22,7 +22,7 @@ set(MSGPACK_CXX20 Yes CACHE BOOL "")
 set(MSGPACK_USE_BOOST No CACHE BOOL "")
 set(MSGPACK_BUILD_DOCS No CACHE BOOL "")
 set(MSGPACK_BUILD_EXAMPLES No CACHE BOOL "")
-add_subdirectory(thirdparty/msgpack)
+add_subdirectory(thirdparty/msgpack EXCLUDE_FROM_ALL)
 # -------------------
 
 add_library(detector-core OBJECT
