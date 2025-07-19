@@ -26,7 +26,7 @@ namespace gpio
   };
 
   struct pin {
-    gpio_chip& chip;
+    const gpio_chip& chip;
     const uint32_t id;
   };
 }

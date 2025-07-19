@@ -13,34 +13,34 @@ namespace gpio
   {                   \
     chip, id          \
   }
-  inline const Pin(A, 0);
-  inline const Pin(A, 1);
-  inline const Pin(A, 2);
-  inline const Pin(A, 3);
-  inline const Pin(A, 6);
-  inline const Pin(A, 7);
-  inline const Pin(A, 8);
-  inline const Pin(A, 9);
-  inline const Pin(A, 10);
-  inline const Pin(A, 11);
-  inline const Pin(A, 12);
-  inline const Pin(A, 13);
-  inline const Pin(A, 14);
-  inline const Pin(A, 18);
-  inline const Pin(A, 19);
-  inline const Pin(A, 20);
-  inline const Pin(A, 21);
+  constexpr Pin(A, 0);
+  constexpr Pin(A, 1);
+  constexpr Pin(A, 2);
+  constexpr Pin(A, 3);
+  constexpr Pin(A, 6);
+  constexpr Pin(A, 7);
+  constexpr Pin(A, 8);
+  constexpr Pin(A, 9);
+  constexpr Pin(A, 10);
+  constexpr Pin(A, 11);
+  constexpr Pin(A, 12);
+  constexpr Pin(A, 13);
+  constexpr Pin(A, 14);
+  constexpr Pin(A, 18);
+  constexpr Pin(A, 19);
+  constexpr Pin(A, 20);
+  constexpr Pin(A, 21);
 
-  inline const Pin(C, 0);
-  inline const Pin(C, 1);
-  inline const Pin(C, 2);
-  inline const Pin(C, 3);
-  inline const Pin(C, 4);
-  inline const Pin(C, 7);
+  constexpr Pin(C, 0);
+  constexpr Pin(C, 1);
+  constexpr Pin(C, 2);
+  constexpr Pin(C, 3);
+  constexpr Pin(C, 4);
+  constexpr Pin(C, 7);
 
-  inline const Pin(G, 6);
-  inline const Pin(G, 7);
-  inline const Pin(G, 8);
-  inline const Pin(G, 9);
+  constexpr Pin(G, 6);
+  constexpr Pin(G, 7);
+  constexpr Pin(G, 8);
+  constexpr Pin(G, 9);
 #undef Pin
 }
