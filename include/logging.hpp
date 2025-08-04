@@ -15,17 +15,17 @@
 #define JOURNALD_LINE_PREFIX "CODE_LINE="
 
 #define vInfo(fmt, ...)                                                                                           \
-  sd_journal_print_with_location(LOG_INFO, "CODE_FILE=" __FILE__, "CODE_LINE=" _STRINGIFY(__LINE__), __func__, fmt, ##__VA_ARGS__)
+  sd_journal_print(LOG_INFO, fmt, ##__VA_ARGS__)
 #define vWarning(fmt, ...)                                                                                           \
-  sd_journal_print_with_location(LOG_WARNING, "CODE_FILE=" __FILE__, "CODE_LINE=" _STRINGIFY(__LINE__), __func__, fmt, ##__VA_ARGS__)
+  sd_journal_print(LOG_WARNING, fmt, ##__VA_ARGS__)
 #define vError(fmt, ...)                                                                                         \
-  sd_journal_print_with_location(LOG_ERR, "CODE_FILE=" __FILE__, "CODE_LINE=" _STRINGIFY(__LINE__), __func__, fmt, ##__VA_ARGS__)
+  sd_journal_print(LOG_ERR, fmt, ##__VA_ARGS__)
 
 #ifdef DEBUG_LOGGING
 #define vDebug(fmt, ...)                                                                                           \
-  sd_journal_print_with_location(LOG_DEBUG, "CODE_FILE=" __FILE__, "CODE_LINE=" _STRINGIFY(__LINE__), __func__, fmt, ##__VA_ARGS__)
+  sd_journal_print(LOG_DEBUG, fmt, ##__VA_ARGS__)
 #define vTrace(fmt, ...)                                                                                            \
-  sd_journal_print_with_location(LOG_NOTICE, "CODE_FILE=" __FILE__, "CODE_LINE=" _STRINGIFY(__LINE__), __func__, fmt, ##__VA_ARGS__)
+  sd_journal_print(LOG_NOTICE, fmt, ##__VA_ARGS__)
 #else
 #define vDebug(fmt, ...)
 #define vTrace(fmt, ...)
@@ -118,7 +118,7 @@ namespace core::details
 #define __streamLog(level, msg)                         \
   do {                                                  \
     std::string s = (std::stringstream() << msg).str(); \
-    v##level(s.data());                                 \
+    v##level("%s", s.data());                           \
   } while (false)
 
 #define mDebug(msg) __streamLog(Debug, msg)
