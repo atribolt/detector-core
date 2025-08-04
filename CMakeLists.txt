@@ -14,7 +14,15 @@ configure_file(detector_core_version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/detect
 
 find_package(PkgConfig REQUIRED)
 
-pkg_search_module(systemd REQUIRED IMPORTED_TARGET libsystemd)
+option(CORE_JOURNALD_LOGGING "Write log to journald" No)
+option(CORE_DEBUG_LOGGING "Enable debug and trace log" Yes)
+
+option(WITH_TEST Off "Build and run test")
+
+if (CORE_JOURNALD_LOGGING)
+  pkg_search_module(systemd REQUIRED IMPORTED_TARGET libsystemd)
+endif()
+
 pkg_search_module(sysfs REQUIRED IMPORTED_TARGET libsysfs)
 
 # ----- MsgPack -----
@@ -27,7 +35,7 @@ add_subdirectory(thirdparty/msgpack EXCLUDE_FROM_ALL)
 
 add_library(detector-core OBJECT
   include/endian.hpp
-  include/logging.hpp src/logging.cpp
+  include/logging.hpp
   include/signal.hpp src/signal.cpp
   include/sample.hpp
   include/signal_file.hpp
@@ -59,10 +67,16 @@ target_include_directories(detector-core
     include
 )
 
+target_compile_definitions(detector-core
+  PUBLIC
+    $<$<BOOL:${CORE_JOURNALD_LOGGING}>:JOURNALD_LOGGING>
+    $<$<BOOL:${CORE_DEBUG_LOGGING}>:DEBUG_LOGGING>
+)
+
 target_link_libraries(detector-core
   PUBLIC
     msgpack-cxx
-    PkgConfig::systemd
+    $<$<BOOL:${CORE_JOURNALD_LOGGING}>:PkgConfig::systemd>
     PkgConfig::sysfs
 )
 
@@ -73,7 +87,6 @@ set_target_properties(detector-core
 )
 
 
-option(WITH_TEST Off "Build and run test")
 if (WITH_TEST)
   enable_testing()
 

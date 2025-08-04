@@ -42,8 +42,8 @@ void gpio::set_mode(pin p, pin_mode value)
 
   (*bank) = zero_old_mode | mode;
 
-  vDebug("Pin %d mode changed: %X -> %X", p.id, old_mode, uint32_t(value));
-  vDebug("Pin %d i: %d, o: %d", p.id, index, offset);
+  vTrace("Pin %d mode changed: %X -> %X", p.id, old_mode, uint32_t(value));
+  vTrace("Pin %d i: %d, o: %d", p.id, index, offset);
 }
 
 gpio::pin_value gpio::get_pin_value(pin p)
