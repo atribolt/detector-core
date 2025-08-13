@@ -100,7 +100,8 @@ public:
     return size() == 0;
   }
 
-  inline value_type operator[](size_t i) const {
+  inline value_type operator[](size_t i) const
+  {
     return (_front + i) % _items.size();
   }
 
