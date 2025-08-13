@@ -14,3 +14,9 @@ namespace core::signal_file::v3
   void dump(const signal& sig, std::ostream& os);
   signal load(std::istream& from);
 }
+
+namespace core::signal_file::v31
+{
+  void dump(const signal& sig, std::ostream& os);
+  signal load(std::istream& from);
+}

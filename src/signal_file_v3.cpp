@@ -36,8 +36,10 @@ void core::signal_file::v3::dump(const signal& sig, std::ostream& os)
   msgpack::pack(os, sig.samples());
 }
 
-core::signal core::signal_file::v3::load(std::istream& is)
-{
+static core::signal load_v3(std::istream& is, bool is_v31) {
+  using namespace core;
+  using namespace core::signal_file;
+
   enum class field {
     date_time,
     microseconds,
@@ -51,6 +53,7 @@ core::signal core::signal_file::v3::load(std::istream& is)
     flags,
     antenna,
     signal,
+    threshold,
     completed
   };
 
@@ -64,6 +67,7 @@ core::signal core::signal_file::v3::load(std::istream& is)
   antenna_type antenna;
   signal::data_t samples;
   adc_info adc;
+  int16_t threshold = 0;
 
   field process = field::date_time;
   while (process != field::completed) {
@@ -77,90 +81,95 @@ core::signal core::signal_file::v3::load(std::istream& is)
     msgpack::object_handle obj;
     while (u.next(obj)) {
       switch (process) {
-        case field::date_time: {
-          std::string time_str = obj->as<std::string>();
-          tm time;
-          memset(&time, 0, sizeof(tm));
-          strptime(time_str.data(), kTimeFormat.data(), &time);
-          if (errno) {
-            throw signal_file_load_error { "error while read time microseconds" };
-          }
-          begin_time = std::chrono::seconds(timegm(&time));
+      case field::date_time: {
+        std::string time_str = obj->as<std::string>();
+        tm time;
+        memset(&time, 0, sizeof(tm));
+        strptime(time_str.data(), kTimeFormat.data(), &time);
+        if (errno) {
+          throw signal_file_load_error { "error while read time microseconds" };
+        }
+        begin_time = std::chrono::seconds(timegm(&time));
 
-          process = field::microseconds;
+        process = field::microseconds;
+        break;
+      }
+
+      case field::microseconds: {
+        uint32_t us = obj->as<uint32_t>();
+        begin_time += std::chrono::microseconds(us);
+
+        process = field::latitude;
+        break;
+      }
+
+      case field::longitude: {
+        obj->convert(lon);
+        process = field::altitude;
+        break;
+      }
+      case field::latitude: {
+        obj->convert(lat);
+        process = field::longitude;
+        break;
+      }
+      case field::altitude: {
+        obj->convert(alt);
+        process = field::sample_rate;
+        break;
+      }
+      case field::sample_rate: {
+        obj->convert(adc.sample_rate);
+        process = field::adc_load_resistance;
+        break;
+      }
+      case field::adc_load_resistance: {
+        obj->convert(adc.load_resistance);
+        process = field::adc_bits;
+        break;
+      }
+      case field::adc_bits: {
+        obj->convert(adc.bits);
+        process = field::adc_reference_voltage;
+        break;
+      }
+      case field::adc_reference_voltage: {
+        obj->convert(adc.reference_voltage);
+        process = field::flags;
+        break;
+      }
+      case field::flags: {
+        obj->convert(flags);
+        process = field::antenna;
+        break;
+      }
+      case field::antenna: {
+        antenna = antenna_type(obj->as<uint8_t>());
+        switch (antenna) {
+        case antenna_type::unknown:
+        case antenna_type::miniwhip:
+        case antenna_type::magnetic:
           break;
+
+        default:
+          throw signal_file_load_error { "invalid antenna type" };
         }
 
-        case field::microseconds: {
-          uint32_t us = obj->as<uint32_t>();
-          begin_time += std::chrono::microseconds(us);
-
-          process = field::latitude;
-          break;
-        }
-
-        case field::longitude: {
-          obj->convert(lon);
-          process = field::altitude;
-          break;
-        }
-        case field::latitude: {
-          obj->convert(lat);
-          process = field::longitude;
-          break;
-        }
-        case field::altitude: {
-          obj->convert(alt);
-          process = field::sample_rate;
-          break;
-        }
-        case field::sample_rate: {
-          obj->convert(adc.sample_rate);
-          process = field::adc_load_resistance;
-          break;
-        }
-        case field::adc_load_resistance: {
-          obj->convert(adc.load_resistance);
-          process = field::adc_bits;
-          break;
-        }
-        case field::adc_bits: {
-          obj->convert(adc.bits);
-          process = field::adc_reference_voltage;
-          break;
-        }
-        case field::adc_reference_voltage: {
-          obj->convert(adc.reference_voltage);
-          process = field::flags;
-          break;
-        }
-        case field::flags: {
-          obj->convert(flags);
-          process = field::antenna;
-          break;
-        }
-        case field::antenna: {
-          antenna = antenna_type(obj->as<uint8_t>());
-          switch (antenna) {
-            case antenna_type::unknown:
-            case antenna_type::miniwhip:
-            case antenna_type::magnetic:
-              break;
-
-            default:
-              throw signal_file_load_error { "invalid antenna type" };
-          }
-
-          process = field::signal;
-          break;
-        }
-        case field::signal: {
-          obj->convert(samples);
-          process = field::completed;
-          break;
-        }
-        case field::completed:
-          break;
+        process = field::signal;
+        break;
+      }
+      case field::signal: {
+        obj->convert(samples);
+        process = is_v31 ? field::threshold : field::completed;
+        break;
+      }
+      case field::threshold: {
+        obj->convert(threshold);
+        process = field::completed;
+        break;
+      }
+      case field::completed:
+        break;
       }
     }
   }
@@ -172,5 +181,22 @@ core::signal core::signal_file::v3::load(std::istream& is)
   sig.reset_flags(flags);
   sig.set_antenna_type(antenna);
   sig.set_signal(std::move(samples));
+  sig.set_threshold(threshold);
   return sig;
+}
+
+core::signal core::signal_file::v3::load(std::istream& is)
+{
+  return load_v3(is, false);
+}
+
+void core::signal_file::v31::dump(const signal &sig, std::ostream &os)
+{
+  core::signal_file::v3::dump(sig, os);
+  msgpack::pack(os, sig.threshold());
+}
+
+core::signal core::signal_file::v31::load(std::istream &from)
+{
+  return load_v3(from, true);
 }

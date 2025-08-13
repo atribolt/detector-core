@@ -63,6 +63,7 @@ namespace core
     void reset_flags(uint8_t flags = 0);
     void set_antenna_type(antenna_type type);
     void set_adc_info(adc_info info);
+    void set_threshold(int16_t threshold);
 
     void swap(signal& other);
 
@@ -72,6 +73,7 @@ namespace core
 
     std::chrono::microseconds begin_timestamp() const;
     uint32_t sample_rate() const;
+    int16_t threshold() const;
     uint8_t flags() const;
     const data_t& samples() const;
     antenna_type antenna() const;
@@ -84,6 +86,7 @@ namespace core
 
     std::chrono::microseconds _begin_timestamp;
     adc_info _adc_info;
+    int16_t _threshold;
 
     uint8_t _flags { 0 };
     antenna_type _antenna_type { antenna_type::unknown };

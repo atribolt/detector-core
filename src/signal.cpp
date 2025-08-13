@@ -54,6 +54,11 @@ namespace core
     _adc_info = info;
   }
 
+  void signal::set_threshold(int16_t threshold)
+  {
+    _threshold = threshold;
+  }
+
   void signal::swap(signal& o)
   {
     std::swap(_lon, o._lon);
@@ -88,6 +93,11 @@ namespace core
   uint32_t signal::sample_rate() const
   {
     return _adc_info.sample_rate;
+  }
+
+  int16_t signal::threshold() const
+  {
+    return _threshold;
   }
 
   uint8_t signal::flags() const

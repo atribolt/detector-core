@@ -36,6 +36,9 @@ namespace core::signal_file
         case version::v3:
           dump_fn = v3::dump;
           break;
+        case version::v31:
+          dump_fn = v31::dump;
+          break;
         default:
           throw signal_file_dump_error { "invalid version for dump" };
       }
@@ -69,6 +72,9 @@ namespace core::signal_file
           break;
         case version::v3:
           load_fn = v3::load;
+          break;
+        case version::v31:
+          load_fn = v31::load;
           break;
         default:
           throw signal_file_load_error { "invalid version for load" };
