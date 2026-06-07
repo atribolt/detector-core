@@ -93,14 +93,9 @@ namespace core::details
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
 
     std::string msg;
-    if constexpr (sizeof...(args) == 0) {
-      msg = format;
-    }
-    else {
-      int count = snprintf(msg.data(), 0, format, args...);
-      msg.resize(count + 1);
-      snprintf(msg.data(), msg.size(), format, args...);
-    }
+    int count = snprintf(msg.data(), 0, format, args...);
+    msg.resize(count + 1);
+    snprintf(msg.data(), msg.size(), format, args...);
 
     std::stringstream ss;
     ss << ts.tv_sec << '.' << ts.tv_nsec << " [" << level_trait<level>::name << "] " << msg;
