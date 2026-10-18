@@ -90,7 +90,7 @@ namespace core::details
       return;
 
     timespec ts;
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+    clock_gettime(CLOCK_MONOTONIC, &ts);
 
     std::string msg;
     int count = snprintf(msg.data(), 0, format, args...);
