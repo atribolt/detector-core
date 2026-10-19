@@ -71,7 +71,7 @@ public:
     return _items + _cursor;
   }
 
-  const value_type* raw()
+  value_type* raw()
   {
     return _items + _cursor;
   }

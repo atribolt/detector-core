@@ -52,6 +52,11 @@ public:
     inc_cursor();
   }
 
+  inline const value_type& front() const
+  {
+    return _items[_front];
+  }
+
   inline value_type pop_front()
   {
     value_type result;
@@ -100,9 +105,19 @@ public:
     return size() == 0;
   }
 
-  inline value_type operator[](size_t i) const
+  inline value_type& operator[](size_t i)
   {
-    return (_front + i) % _items.size();
+    return _items[(_front + i) % _items.size()];
+  }
+
+  inline value_type& next()
+  {
+    return _items[_cursor];
+  }
+
+  inline void forward()
+  {
+    inc_cursor();
   }
 
 private:
